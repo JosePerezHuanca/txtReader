@@ -24,7 +24,7 @@ class GlobalPlugin(globalPluginHandler.GlobalPlugin):
         self.reachedLimit={'start': False, 'end': False};
 
 
-    @script(description='Muestra el diálogo para habrir archivo', gesture='kb:NVDA+alt+f', category='Txt reader')
+    @script(description='Muestra el diálogo para abrir archivo', gesture='kb:NVDA+alt+f', category='Txt reader')
     def script_open_file(self,gesture):
         def showDialog():
             dialog=wx.FileDialog(None,"Habrir", wildcard='Archivos de texto (*.txt)|*.txt|Todos los archivos (*.*)|*.*',style=wx.FD_OPEN);
@@ -53,7 +53,7 @@ class GlobalPlugin(globalPluginHandler.GlobalPlugin):
         else:
             ui.message(self.textContent[self.currentItem]);
 
-    @script(description='Ba a la siguiente línea del texto', gesture='kb:NVDA+alt+downArrow', category='Txt reader')
+    @script(description='Navega a la siguiente línea del texto', gesture='kb:NVDA+alt+downArrow', category='Txt reader')
     def script_next_line(self,gesture):
         self.currentItem=min(len(self.textContent)-1, self.currentItem+1);
         if self.currentItem== len(self.textContent)-1:
@@ -68,7 +68,7 @@ class GlobalPlugin(globalPluginHandler.GlobalPlugin):
             self.speakCurrentLine();
 
 
-    @script(description='Ba a la línea anterior del texto',gesture='kb:NVDA+alt+upArrow', category='Txt reader')
+    @script(description='Navega a la línea anterior del texto',gesture='kb:NVDA+alt+upArrow', category='Txt reader')
     def script_previous_line(self,gesture):
         self.currentItem=max(0, self.currentItem-1);
         if self.currentItem==0:
@@ -83,7 +83,7 @@ class GlobalPlugin(globalPluginHandler.GlobalPlugin):
             self.speakCurrentLine();
 
 
-    @script(description='Anuncia el título del archivo',gesture='kb:NVDA+alt+t', category='Txt reader')
+    @script(description='Lee el título del archivo',gesture='kb:NVDA+alt+t', category='Txt reader')
     def script_title_file(self,gesture):
         if not self.fileName:
             ui.message('Primero selecciona un archivo');
@@ -95,12 +95,12 @@ class GlobalPlugin(globalPluginHandler.GlobalPlugin):
     def script_current_line(self,gesture):
         self.speakCurrentLine();
 
-    @script(description='Ba al principio del texto',gesture='kb:NVDA+alt+home', category='Txt reader')
+    @script(description='Ir al principio del texto',gesture='kb:NVDA+alt+home', category='Txt reader')
     def script_beginText(self,gesture):
         self.currentItem=0;
         self.speakCurrentLine();
 
-    @script(description='Ba al final del texto',gesture='kb:NVDA+alt+end', category='Txt reader')
+    @script(description='Ir al final del texto',gesture='kb:NVDA+alt+end', category='Txt reader')
     def script_endText(self,gesture):
         self.currentItem=len(self.textContent)-1;
         self.speakCurrentLine();
@@ -113,7 +113,7 @@ class GlobalPlugin(globalPluginHandler.GlobalPlugin):
             api.copyToClip(self.textContent[self.currentItem], 'Copiado');
 
 
-    @script(description='Vacía el bufer actual',gesture='kb:NVDA+alt+l', category='Txt reader')
+    @script(description='Si se abrió un archivo previamente, vacía el contenido en memoria',gesture='kb:NVDA+alt+l', category='Txt reader')
     def script_clearBufer(self,gesture):
         self.textContent.clear();
         ui.message('Se vació el bufer');
