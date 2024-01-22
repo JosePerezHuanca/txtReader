@@ -114,6 +114,6 @@ class GlobalPlugin(globalPluginHandler.GlobalPlugin):
 
 
     @script(description='Si se abrió un archivo previamente, vacía el contenido en memoria',gesture='kb:NVDA+alt+l', category='Txt reader')
-    def script_clearBufer(self,gesture):
+    def script_clearBuffer(self,gesture):
         self.textContent.clear();
-        ui.message('Se vació el bufer');
+        ui.message('Se vació el buffer');
