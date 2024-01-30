@@ -36,9 +36,11 @@ class GlobalPlugin(globalPluginHandler.GlobalPlugin):
         self.currentItem=0;
         self.fileName=None;
         self.reachedLimit={'start': False, 'end': False};
+        # Translators: script category for add-on gestures
+    scriptCategory=_('Txt reader');
 
     # Translate
-    @script(description=_('Muestra el diálogo para abrir archivo'), gesture='kb:NVDA+alt+f', category='Txt reader')
+    @script(description=_('Muestra el diálogo para abrir archivo'), gesture='kb:NVDA+alt+f', category=scriptCategory)
     def script_open_file(self,gesture):
         def showDialog():
             dialog=wx.FileDialog(None,_("Habrir"), wildcard=_('Archivos de texto (*.txt)|*.txt|Todos los archivos (*.*)|*.*'),style=wx.FD_OPEN);
@@ -55,7 +57,7 @@ class GlobalPlugin(globalPluginHandler.GlobalPlugin):
                             self.currentItem=0;
                     else:
                             #translate
-                            wx.MessageBox(_('Ese archivo no existe'), 'Error', style=wx.OK | wx.ICON_ERROR);
+                            wx.MessageBox(_('Ese archivo no existe'), _('Error'), style=wx.OK | wx.ICON_ERROR);
             except Exception as e:
                 wx.MessageBox(str(e));
             finally:
@@ -70,7 +72,7 @@ class GlobalPlugin(globalPluginHandler.GlobalPlugin):
             ui.message(self.textContent[self.currentItem]);
 
     # Translate
-    @script(description=_('Navega a la siguiente línea del texto'), gesture='kb:NVDA+alt+downArrow', category='Txt reader')
+    @script(description=_('Navega a la siguiente línea del texto'), gesture='kb:NVDA+alt+downArrow', category=scriptCategory)
     def script_next_line(self,gesture):
         self.currentItem=min(len(self.textContent)-1, self.currentItem+1);
         if self.currentItem== len(self.textContent)-1:
@@ -87,7 +89,7 @@ class GlobalPlugin(globalPluginHandler.GlobalPlugin):
             self.speakCurrentLine();
 
     # Translate
-    @script(description=_('Navega a la línea anterior del texto'),gesture='kb:NVDA+alt+upArrow', category='Txt reader')
+    @script(description=_('Navega a la línea anterior del texto'),gesture='kb:NVDA+alt+upArrow', category=scriptCategory)
     def script_previous_line(self,gesture):
         self.currentItem=max(0, self.currentItem-1);
         if self.currentItem==0:
@@ -105,7 +107,7 @@ class GlobalPlugin(globalPluginHandler.GlobalPlugin):
 
 
     # Translate
-    @script(description=_('Lee el título del archivo'),gesture='kb:NVDA+alt+t', category='Txt reader')
+    @script(description=_('Lee el título del archivo'),gesture='kb:NVDA+alt+t', category=scriptCategory)
     def script_title_file(self,gesture):
         if not self.fileName:
             # Translate
@@ -115,24 +117,24 @@ class GlobalPlugin(globalPluginHandler.GlobalPlugin):
 
 
     # Translate
-    @script(description=_('Lee la línea actual'),gesture='kb:NVDA+alt+space', category='Txt reader')
+    @script(description=_('Lee la línea actual'),gesture='kb:NVDA+alt+space', category=scriptCategory)
     def script_current_line(self,gesture):
         self.speakCurrentLine();
 
     # Translate
-    @script(description=_('Ir al principio del texto'),gesture='kb:NVDA+alt+home', category='Txt reader')
+    @script(description=_('Ir al principio del texto'),gesture='kb:NVDA+alt+home', category=scriptCategory)
     def script_beginText(self,gesture):
         self.currentItem=0;
         self.speakCurrentLine();
 
     # Translate
-    @script(description=_('Ir al final del texto'),gesture='kb:NVDA+alt+end', category='Txt reader')
+    @script(description=_('Ir al final del texto'),gesture='kb:NVDA+alt+end', category=scriptCategory)
     def script_endText(self,gesture):
         self.currentItem=len(self.textContent)-1;
         self.speakCurrentLine();
 
     # Translate
-    @script(description=_('Copia la línea actual'),gesture='kb:NVDA+alt+c', category='Txt reader')
+    @script(description=_('Copia la línea actual'),gesture='kb:NVDA+alt+c', category=scriptCategory)
     def script_copy_line(self,gesture):
         if not self.textContent:
             # Translate
@@ -142,7 +144,7 @@ class GlobalPlugin(globalPluginHandler.GlobalPlugin):
             api.copyToClip(self.textContent[self.currentItem], _('Copiado'));
 
     # Translate
-    @script(description=_('Si se abrió un archivo previamente, vacía el contenido en memoria'),gesture='kb:NVDA+alt+l', category='Txt reader')
+    @script(description=_('Si se abrió un archivo previamente, vacía el contenido en memoria'),gesture='kb:NVDA+alt+l', category=scriptCategory)
     def script_clearBuffer(self,gesture):
         self.textContent.clear();
         # Translate
