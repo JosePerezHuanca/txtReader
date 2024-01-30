@@ -9,6 +9,7 @@ Al abrir un archivo, el complemento copia el contenido en memoria y cierra el ar
 ## Atajos: 
 
 Nota: todos los atajos se pueden personalizar en la categoría Txt reader del diálogo gestos de entrada.
+
 - NVDA+alt+f: Muestra el diálogo para abrir un archivo.
 - NVDA+alt+flecha abajo: Navega a la siguiente línea.
 - NVDA+alt+flecha arriba: Navega a la línea anterior.
