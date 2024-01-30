@@ -20,6 +20,11 @@ Nota: todos los atajos se pueden personalizar en la categoría Txt reader del di
 
 ## Registro de cambios
 
+### 0.3
+
+- Se solucionó un error que permitía la ejecución del complemento en el modo seguro.
+- El complemento ya se puede traducir
+
 ### 0.2
 
 - Los atajos de teclado ahora están agrupados en la categoría Txt reader de los gestos de entrada.
