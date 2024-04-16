@@ -8,7 +8,6 @@ import globalPluginHandler;
 from scriptHandler import script;
 import os;
 import wx;
-import gui;
 import codecs;
 import api;
 import ui;
@@ -32,11 +31,14 @@ except addonHandler.AddonError:
 class GlobalPlugin(globalPluginHandler.GlobalPlugin):
     def __init__(self):
         super(GlobalPlugin, self).__init__();
-        self.textContent=[];
+        self.content=[];
         self.currentItem=0;
+        self.selectedItemIndex=None
+        self.currentText=[];
         self.fileName=None;
         self.reachedLimit={'start': False, 'end': False};
-        # Translators: script category for add-on gestures
+    
+    # Translators: script category for add-on gestures
     scriptCategory=_('Txt reader');
 
     # Translate
@@ -50,11 +52,16 @@ class GlobalPlugin(globalPluginHandler.GlobalPlugin):
                     if os.path.exists(filePat):
                         with codecs.open(filePat,'r',encoding='utf-8') as txtFile:
                             content=[line.strip() for line in txtFile.readlines()];
-                            self.textContent.clear();
-                            self.textContent.extend(content);
                             tones.beep(300,150);
                             self.fileName=os.path.basename(filePat);
+                            fileDic={
+                                "title": self.fileName,
+                                "text": content
+                            }
+                            self.content.append(fileDic)
                             self.currentItem=0;
+                            self.selectedItemIndex = len(self.content) - 1
+                            self.currentText=content
                     else:
                             #translate
                             wx.MessageBox(_('Ese archivo no existe'), _('Error'), style=wx.OK | wx.ICON_ERROR);
@@ -65,17 +72,19 @@ class GlobalPlugin(globalPluginHandler.GlobalPlugin):
         wx.CallAfter(showDialog);
 
     def speakCurrentLine(self):
-        if not self.textContent:
+        if not self.currentText:
             # Translate
             ui.message(_('Primero selecciona un archivo'));
+        elif 0 <= self.currentItem < len(self.currentText):
+            ui.message(self.currentText[self.currentItem])
         else:
-            ui.message(self.textContent[self.currentItem]);
+            ui.message(self.currentText[-1])
 
     # Translate
     @script(description=_('Navega a la siguiente línea del texto'), gesture='kb:NVDA+alt+downArrow', category=scriptCategory)
     def script_next_line(self,gesture):
-        self.currentItem=min(len(self.textContent)-1, self.currentItem+1);
-        if self.currentItem== len(self.textContent)-1:
+        self.currentItem=min(len(self.currentText)-1, self.currentItem+1);
+        if self.currentItem== len(self.currentText)-1:
             if self.reachedLimit['end']:
                 tones.beep(400,150);
                 # Translate
@@ -130,13 +139,13 @@ class GlobalPlugin(globalPluginHandler.GlobalPlugin):
     # Translate
     @script(description=_('Ir al final del texto'),gesture='kb:NVDA+alt+end', category=scriptCategory)
     def script_endText(self,gesture):
-        self.currentItem=len(self.textContent)-1;
+        self.currentItem=len(self.currentText)-1;
         self.speakCurrentLine();
 
     # Translate
     @script(description=_('Copia la línea actual'),gesture='kb:NVDA+alt+c', category=scriptCategory)
     def script_copy_line(self,gesture):
-        if not self.textContent:
+        if not self.currentText:
             # Translate
             ui.message(_('No hay nada para copiar'));
         else:
@@ -146,6 +155,63 @@ class GlobalPlugin(globalPluginHandler.GlobalPlugin):
     # Translate
     @script(description=_('Si se abrió un archivo previamente, vacía el contenido en memoria'),gesture='kb:NVDA+alt+l', category=scriptCategory)
     def script_clearBuffer(self,gesture):
-        self.textContent.clear();
+        self.content.clear();
+        self.currentText.clear();
         # Translate
         ui.message(_('Se vació el buffer'));
+
+
+
+    @script(description=_('Siguiente texto'), gesture='kb:NVDA+alt+rightArrow', category=scriptCategory)
+    def script_nextText(self, gesture):
+        if self.content:
+            if self.selectedItemIndex is not None:
+                next_index = (self.selectedItemIndex + 1) % len(self.content)
+                next_item = self.content[next_index]
+                if next_index == 0 or "title" not in next_item:
+                    ui.message("Fin")
+                else:
+                    self.fileName = next_item["title"]
+                    self.currentText = next_item["text"]
+                    self.selectedItemIndex = next_index
+                    self.speakCurrentLine()
+            else:
+                ui.message('No se ha seleccionado un archivo');
+        else:
+            ui.message(_('Primero selecciona un archivo.'))
+
+    @script(description=_('Texto anterior'), gesture='kb:NVDA+alt+leftArrow', category=scriptCategory)
+    def script_previous_text(self, gesture):
+        if self.content:
+            if self.selectedItemIndex is not None:
+                previous_index = (self.selectedItemIndex - 1) % len(self.content)
+                previous_item = self.content[previous_index]
+                if previous_index == len(self.content) - 1 or "title" not in previous_item:
+                    ui.message("Inicio")
+                else:
+                    self.fileName = previous_item["title"]
+                    self.currentText = previous_item["text"]
+                    self.selectedItemIndex = previous_index
+                    self.speakCurrentLine()
+            else:
+                ui.message('No se ha seleccionado un archivo')
+        else:
+            ui.message(_('Primero selecciona un archivo.'))
+
+    @script(description='Borrar texto actual', gesture='kb:NVDA+alt+backSpace')
+    def script_removeCurrentText(self, gesture):
+        if self.fileName:
+            for item in self.content:
+                if "title" in item and item["title"] == self.fileName:
+                    self.content.remove(item)
+                    break
+            self.currentText.clear()
+            self.fileName = None
+            if self.content:
+                self.selectedItemIndex = (self.selectedItemIndex - 1) % len(self.content)
+                current_item = self.content[self.selectedItemIndex]
+                self.fileName = current_item["title"]
+                self.currentText = current_item["text"]
+            self.speakCurrentLine()
+        else:
+            ui.message('Primero selecciona un archivo')
