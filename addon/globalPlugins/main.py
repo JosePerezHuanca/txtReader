@@ -14,6 +14,8 @@ import ui;
 import tones;
 import globalVars;
 import addonHandler;
+from logHandler import log;
+import speech;
 
 def disableInSecureMode(decoratedCls):
     if globalVars.appArgs.secure:
@@ -24,7 +26,6 @@ def disableInSecureMode(decoratedCls):
 try:
     addonHandler.initTranslation();
 except addonHandler.AddonError:
-    from logHandler import log;
     log.warning('Unable to initialise translations. This may be because the addon is running from NVDA scratchpad.');
 
 @disableInSecureMode
@@ -35,6 +36,9 @@ class GlobalPlugin(globalPluginHandler.GlobalPlugin):
         self.currentItem=0;
         self.selectedItemIndex=None
         self.currentText=[];
+        self.word=[];
+        self.character=[];
+        self.currentChar=0;
         self.fileName=None;
         self.reachedLimit={'start': False, 'end': False};
     
@@ -76,9 +80,42 @@ class GlobalPlugin(globalPluginHandler.GlobalPlugin):
             # Translate
             ui.message(_('Primero selecciona un archivo'));
         elif 0 <= self.currentItem < len(self.currentText):
+            self.character=list(self.currentText[self.currentItem]);
             ui.message(self.currentText[self.currentItem])
         else:
             ui.message(self.currentText[-1])
+
+
+    def speakCurrentCharacter(self):
+        if not self.character:
+            # Translate
+            ui.message(_('Primero selecciona un archivo'));
+        elif 0 <= self.currentChar < len(self.character):
+            speech.speakSpelling(self.character[self.currentChar])
+        else:
+            speech.speakSpelling(self.character[-1]);
+
+    # Translate
+    @script(description=_('Navega al siguiente caracter del texto'), gesture='kb:NVDA+alt+shift+rightArrow', category=scriptCategory)
+    def script_next_character(self,gesture):
+        self.currentChar=min(len(self.character)-1, self.currentChar+1);
+        if self.currentChar== len(self.character)-1:
+            ui.message('Fin')
+            self.speakCurrentCharacter();
+        else:
+            self.speakCurrentCharacter();
+
+
+    # Translate
+    @script(description=_('Navega al caracter anterior del texto'),gesture='kb:NVDA+alt+shift+leftArrow', category=scriptCategory)
+    def script_previous_character(self,gesture):
+        self.currentChar=max(0, self.currentChar-1);
+        if self.currentChar==0:
+            ui.message('Inicio')
+            self.speakCurrentCharacter();
+        else:
+            self.speakCurrentCharacter();
+
 
     # Translate
     @script(description=_('Navega a la siguiente línea del texto'), gesture='kb:NVDA+alt+downArrow', category=scriptCategory)
@@ -150,7 +187,7 @@ class GlobalPlugin(globalPluginHandler.GlobalPlugin):
             ui.message(_('No hay nada para copiar'));
         else:
             # Translate
-            api.copyToClip(self.textContent[self.currentItem], _('Copiado'));
+            api.copyToClip(self.currentText[self.currentItem], _('Copiado'));
 
     # Translate
     @script(description=_('Si se abrió un archivo previamente, vacía el contenido en memoria'),gesture='kb:NVDA+alt+l', category=scriptCategory)
@@ -212,6 +249,7 @@ class GlobalPlugin(globalPluginHandler.GlobalPlugin):
                 current_item = self.content[self.selectedItemIndex]
                 self.fileName = current_item["title"]
                 self.currentText = current_item["text"]
+            ui.message('Borrado')
             self.speakCurrentLine()
         else:
-            ui.message('Primero selecciona un archivo')
+            ui.message('Se vació el buffer')
