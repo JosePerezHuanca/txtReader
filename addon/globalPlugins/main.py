@@ -33,7 +33,7 @@ class GlobalPlugin(globalPluginHandler.GlobalPlugin):
         super(GlobalPlugin, self).__init__();
         self.content=[];
         self.currentItem=0;
-        self.selectedItemIndex=None
+        self.selectedItemIndex=0
         self.currentText=[];
         self.fileName=None;
         self.reachedLimit={'start': False, 'end': False};
@@ -75,10 +75,8 @@ class GlobalPlugin(globalPluginHandler.GlobalPlugin):
         if not self.currentText:
             # Translate
             ui.message(_('Primero selecciona un archivo'));
-        elif 0 <= self.currentItem < len(self.currentText):
-            ui.message(self.currentText[self.currentItem])
         else:
-            ui.message(self.currentText[-1])
+            ui.message(self.currentText[self.currentItem])
 
     # Translate
     @script(description=_('Navega a la siguiente línea del texto'), gesture='kb:NVDA+alt+downArrow', category=scriptCategory)
@@ -132,13 +130,13 @@ class GlobalPlugin(globalPluginHandler.GlobalPlugin):
 
     # Translate
     @script(description=_('Ir al principio del texto'),gesture='kb:NVDA+alt+home', category=scriptCategory)
-    def script_beginText(self,gesture):
+    def script_begin_text(self,gesture):
         self.currentItem=0;
         self.speakCurrentLine();
 
     # Translate
     @script(description=_('Ir al final del texto'),gesture='kb:NVDA+alt+end', category=scriptCategory)
-    def script_endText(self,gesture):
+    def script_end_text(self,gesture):
         self.currentItem=len(self.currentText)-1;
         self.speakCurrentLine();
 
@@ -150,11 +148,11 @@ class GlobalPlugin(globalPluginHandler.GlobalPlugin):
             ui.message(_('No hay nada para copiar'));
         else:
             # Translate
-            api.copyToClip(self.textContent[self.currentItem], _('Copiado'));
+            api.copyToClip(self.currentText[self.currentItem], notify=True);
 
     # Translate
     @script(description=_('Si se abrió un archivo previamente, vacía el contenido en memoria'),gesture='kb:NVDA+alt+l', category=scriptCategory)
-    def script_clearBuffer(self,gesture):
+    def script_clear_buffer(self,gesture):
         self.content.clear();
         self.currentText.clear();
         # Translate
@@ -162,44 +160,52 @@ class GlobalPlugin(globalPluginHandler.GlobalPlugin):
 
 
 
+    # Translate
     @script(description=_('Siguiente texto'), gesture='kb:NVDA+alt+rightArrow', category=scriptCategory)
-    def script_nextText(self, gesture):
+    def script_next_text(self, gesture):
         if self.content:
-            if self.selectedItemIndex is not None:
-                next_index = (self.selectedItemIndex + 1) % len(self.content)
+            if self.selectedItemIndex < len(self.content)-1:
+                next_index=self.selectedItemIndex+1
                 next_item = self.content[next_index]
-                if next_index == 0 or "title" not in next_item:
-                    ui.message("Fin")
-                else:
-                    self.fileName = next_item["title"]
-                    self.currentText = next_item["text"]
-                    self.selectedItemIndex = next_index
-                    self.speakCurrentLine()
+                self.fileName = next_item["title"]
+                self.currentText = next_item["text"]
+                self.selectedItemIndex = next_index
+                #Me aseguro que currentItem no exceda el número de líneas del nuevo texto
+                self.currentItem = min(self.currentItem, len(self.currentText) - 1)
+                self.speakCurrentLine()
             else:
-                ui.message('No se ha seleccionado un archivo');
+                last=self.content[-1]
+                self.fileName=last["title"]
+                self.currentText=last["text"]
+                ui.message(_('Fin'))
+                self.speakCurrentLine()
         else:
             ui.message(_('Primero selecciona un archivo.'))
 
+    # Translate
     @script(description=_('Texto anterior'), gesture='kb:NVDA+alt+leftArrow', category=scriptCategory)
     def script_previous_text(self, gesture):
         if self.content:
-            if self.selectedItemIndex is not None:
-                previous_index = (self.selectedItemIndex - 1) % len(self.content)
+            if self.selectedItemIndex>0:
+                previous_index=self.selectedItemIndex-1
                 previous_item = self.content[previous_index]
-                if previous_index == len(self.content) - 1 or "title" not in previous_item:
-                    ui.message("Inicio")
-                else:
-                    self.fileName = previous_item["title"]
-                    self.currentText = previous_item["text"]
-                    self.selectedItemIndex = previous_index
-                    self.speakCurrentLine()
+                self.fileName = previous_item["title"]
+                self.currentText = previous_item["text"]
+                self.selectedItemIndex = previous_index
+                self.currentItem = min(self.currentItem, len(self.currentText) - 1)
+                self.speakCurrentLine()
             else:
-                ui.message('No se ha seleccionado un archivo')
+                first=self.content[0]
+                self.fileName=first["title"]
+                self.currentText=first["text"]
+                ui.message(_('Inicio'))
+                self.speakCurrentLine()
         else:
             ui.message(_('Primero selecciona un archivo.'))
 
+    # Translate
     @script(description='Borrar texto actual', gesture='kb:NVDA+alt+backSpace')
-    def script_removeCurrentText(self, gesture):
+    def script_remove_current_text(self, gesture):
         if self.fileName:
             for item in self.content:
                 if "title" in item and item["title"] == self.fileName:
