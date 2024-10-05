@@ -52,16 +52,19 @@ class GlobalPlugin(globalPluginHandler.GlobalPlugin):
                     if os.path.exists(filePat):
                         with codecs.open(filePat,'r',encoding='utf-8') as txtFile:
                             content=[line.strip() for line in txtFile.readlines()];
-                            tones.beep(300,150);
                             self.fileName=os.path.basename(filePat);
                             fileDic={
                                 "title": self.fileName,
                                 "text": content
                             }
-                            self.content.append(fileDic)
-                            self.currentItem=0;
-                            self.selectedItemIndex = len(self.content) - 1
-                            self.currentText=content
+                            if not any(fileDic["title"] == self.fileName for fileDic in self.content):
+                                self.content.append(fileDic)
+                                self.currentItem=0;
+                                self.selectedItemIndex = len(self.content) - 1
+                                self.currentText=content
+                                tones.beep(300,150);
+                            else:
+                                wx.MessageBox(_('Ese archivo ya fue cargado'), _('Error'), style=wx.OK | wx.ICON_ERROR)
                     else:
                             #translate
                             wx.MessageBox(_('Ese archivo no existe'), _('Error'), style=wx.OK | wx.ICON_ERROR);
