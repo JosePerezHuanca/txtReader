@@ -36,7 +36,6 @@ class GlobalPlugin(globalPluginHandler.GlobalPlugin):
         self.selectedItemIndex=0
         self.currentText=[];
         self.fileName=None;
-        self.reachedLimit={'start': False, 'end': False};
     
     # Translators: script category for add-on gestures
     scriptCategory=_('Txt reader');
@@ -84,36 +83,28 @@ class GlobalPlugin(globalPluginHandler.GlobalPlugin):
     # Translate
     @script(description=_('Navega a la siguiente línea del texto'), gesture='kb:NVDA+alt+downArrow', category=scriptCategory)
     def script_next_line(self,gesture):
-        self.currentItem=min(len(self.currentText)-1, self.currentItem+1);
-        if self.currentItem== len(self.currentText)-1:
-            if self.reachedLimit['end']:
-                tones.beep(400,150);
-                # Translate
-                ui.message(_('Fin.'));
-                self.speakCurrentLine();
-            else:
-                self.reachedLimit['end']=True;
-                self.speakCurrentLine();
-        else:
-            self.reachedLimit['start']=False;
+        if self.currentItem< len(self.currentText)-1:
+            self.currentItem+=1
+            # Translate
             self.speakCurrentLine();
+        else:
+            self.currentItem=len(self.currentText)-1
+            ui.message(_('Fin'))
+            self.speakCurrentLine();
+            tones.beep(400,150);
 
     # Translate
     @script(description=_('Navega a la línea anterior del texto'),gesture='kb:NVDA+alt+upArrow', category=scriptCategory)
     def script_previous_line(self,gesture):
-        self.currentItem=max(0, self.currentItem-1);
-        if self.currentItem==0:
-            if self.reachedLimit['start']:
-                tones.beep(200,150);
-                # Translate
-                ui.message(_('Inicio.'));
-                self.speakCurrentLine();
-            else:
-                self.reachedLimit['start']=True;
-                self.speakCurrentLine();
-        else:
-            self.reachedLimit['end']=False;
+        if self.currentItem>0:
+            self.currentItem-=1
+            # Translate
             self.speakCurrentLine();
+        else:
+            self.currentItem=0
+            ui.message(_('Inicio.'));
+            self.speakCurrentLine();
+            tones.beep(200,150);
 
 
     # Translate
@@ -154,8 +145,8 @@ class GlobalPlugin(globalPluginHandler.GlobalPlugin):
             api.copyToClip(self.currentText[self.currentItem], notify=True);
 
     # Translate
-    @script(description=_('Si se abrió un archivo previamente, vacía el contenido en memoria'),gesture='kb:NVDA+alt+l', category=scriptCategory)
-    def script_clear_buffer(self,gesture):
+    @script(description=_('Si se abrió uno o mas archivos previamente, vacía el contenido en memoria'),gesture='kb:NVDA+alt+l', category=scriptCategory)
+    def script_clear_list(self,gesture):
         self.content.clear();
         self.currentText.clear();
         # Translate
@@ -164,7 +155,7 @@ class GlobalPlugin(globalPluginHandler.GlobalPlugin):
 
 
     # Translate
-    @script(description=_('Siguiente texto'), gesture='kb:NVDA+alt+rightArrow', category=scriptCategory)
+    @script(description=_('Navega al siguiente texto de la lista'), gesture='kb:NVDA+alt+rightArrow', category=scriptCategory)
     def script_next_text(self, gesture):
         if self.content:
             if self.selectedItemIndex < len(self.content)-1:
@@ -186,7 +177,7 @@ class GlobalPlugin(globalPluginHandler.GlobalPlugin):
             ui.message(_('Primero selecciona un archivo.'))
 
     # Translate
-    @script(description=_('Texto anterior'), gesture='kb:NVDA+alt+leftArrow', category=scriptCategory)
+    @script(description=_('Navega al texto anterior de la lista'), gesture='kb:NVDA+alt+leftArrow', category=scriptCategory)
     def script_previous_text(self, gesture):
         if self.content:
             if self.selectedItemIndex>0:
@@ -207,7 +198,7 @@ class GlobalPlugin(globalPluginHandler.GlobalPlugin):
             ui.message(_('Primero selecciona un archivo.'))
 
     # Translate
-    @script(description='Borrar texto actual', gesture='kb:NVDA+alt+backSpace')
+    @script(description='Elimina el texto actual de la lista', gesture='kb:NVDA+alt+backSpace')
     def script_remove_current_text(self, gesture):
         if self.fileName:
             for item in self.content:
