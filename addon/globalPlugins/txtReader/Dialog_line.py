@@ -2,12 +2,13 @@ import wx
 import ui
 
 class DialogLine(wx.Dialog):
-	def __init__(self,frame, plugin, lineValue):
+	def __init__(self,frame, plugin):
 		super(DialogLine,self).__init__(None,title="Ir a")
 		self.plugin=plugin
+		self.line=self.plugin.currentItem+1
 		self.panel=wx.Panel(self)
 		line_label=wx.StaticText(self.panel, wx.ID_ANY, label="Número de línea")
-		self.line_num = wx.TextCtrl(self.panel, wx.ID_ANY, value=str(lineValue),style=wx.TE_PROCESS_ENTER)
+		self.line_num = wx.TextCtrl(self.panel, wx.ID_ANY, value=str(self.line),style=wx.TE_PROCESS_ENTER)
 		self.line_num.Bind(wx.EVT_TEXT, self.on_text_change)
 		self.line_num.Bind(wx.EVT_TEXT_ENTER, self.on_go)
 		self.line_num.Bind(wx.EVT_KEY_DOWN, self.on_key_press)
@@ -39,7 +40,7 @@ class DialogLine(wx.Dialog):
 		if 0 <= line_number < len(self.plugin.currentText):
 			self.plugin.currentItem=line_number
 			self.plugin.speakCurrentLine()
-			self.EndModal(wx.ID_OK)
+			self.Close()
 		else:
 			wx.MessageBox(_('Número de línea inválido'),_('Error'),style=wx.OK | wx.ICON_ERROR)
 			self.line_num.SetFocus()

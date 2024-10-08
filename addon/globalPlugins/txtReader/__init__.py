@@ -162,9 +162,9 @@ class GlobalPlugin(globalPluginHandler.GlobalPlugin):
     def script_got_to_line(self,gesture):
         def show_dialog():
             if self.currentText:
-                dialog=DialogLine(gui.mainFrame,self,lineValue=self.currentItem+1)
+                dialog=DialogLine(gui.mainFrame,self)
                 gui.mainFrame.prePopup()
-                dialog.ShowModal()
+                dialog.Show()
                 dialog.CentreOnScreen()
                 gui.mainFrame.postPopup()
             else:
