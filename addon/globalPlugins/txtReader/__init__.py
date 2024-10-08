@@ -4,6 +4,7 @@
 # Copyright (C) 2024 José Perez <perezhuancajose@gmail.com>
 
 
+import threading
 import globalPluginHandler;
 from scriptHandler import script;
 import os;
@@ -14,6 +15,8 @@ import ui;
 import tones;
 import globalVars;
 import addonHandler;
+import gui
+from .Dialog_line import DialogLine
 
 def disableInSecureMode(decoratedCls):
     if globalVars.appArgs.secure:
@@ -79,6 +82,8 @@ class GlobalPlugin(globalPluginHandler.GlobalPlugin):
             ui.message(_('Primero selecciona un archivo'));
         else:
             ui.message(self.currentText[self.currentItem])
+
+
 
     # Translate
     @script(description=_('Navega a la siguiente línea del texto'), gesture='kb:NVDA+alt+downArrow', category=scriptCategory)
@@ -151,6 +156,21 @@ class GlobalPlugin(globalPluginHandler.GlobalPlugin):
         self.currentText.clear();
         # Translate
         ui.message(_('Se vació el buffer'));
+
+    # Translate
+    @script(description=_('Muestra el diálogo para ir a una línea específica'),gesture='kb:NVDA+alt+g',category=scriptCategory)
+    def script_got_to_line(self,gesture):
+        def show_dialog():
+            if self.currentText:
+                dialog=DialogLine(gui.mainFrame,self,lineValue=self.currentItem+1)
+                gui.mainFrame.prePopup()
+                dialog.ShowModal()
+                dialog.CentreOnScreen()
+                gui.mainFrame.postPopup()
+            else:
+                wx.MessageBox(_('Primero selecciona un archivo'),_('Error'),style=wx.OK | wx.ICON_ERROR)
+        wx.CallAfter(show_dialog)
+
 
 
 
