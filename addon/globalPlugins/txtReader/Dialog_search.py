@@ -1,4 +1,5 @@
 import wx
+import threading
 import ui
 
 class DialogSearch(wx.Dialog):
@@ -25,6 +26,9 @@ class DialogSearch(wx.Dialog):
 		self.panel.SetSizer(sizeV)
 		self.CenterOnScreen()
 
+	def threadMessage(self):
+		thread=threading.Timer(0.1,self.plugin.speakCurrentLine)
+		thread.start()
 
 
 	def on_search(self,event):
@@ -35,7 +39,7 @@ class DialogSearch(wx.Dialog):
 			search_result=self.plugin.currentText[index]
 			if search_value in search_result.lower():
 				self.plugin.currentItem = index
-				self.plugin.speakCurrentLine()
+				self.threadMessage()
 				found=True
 				self.Close()
 				break

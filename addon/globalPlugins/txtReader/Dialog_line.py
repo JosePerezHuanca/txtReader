@@ -1,4 +1,5 @@
 import wx
+import threading
 import ui
 
 class DialogLine(wx.Dialog):
@@ -28,6 +29,10 @@ class DialogLine(wx.Dialog):
 		self.panel.SetSizer(sizeV)
 		self.CenterOnScreen()
 
+	def threadMessage(self):
+		thread=threading.Timer(0.1,self.plugin.speakCurrentLine)
+		thread.start()
+
 
 	def on_text_change(self,event):
 		value=self.line_num.GetValue()
@@ -39,7 +44,7 @@ class DialogLine(wx.Dialog):
 		line_number=int(self.line_num.GetValue())-1
 		if 0 <= line_number < len(self.plugin.currentText):
 			self.plugin.currentItem=line_number
-			self.plugin.speakCurrentLine()
+			self.threadMessage()
 			self.Close()
 		else:
 			wx.MessageBox(_('Número de línea inválido'),_('Error'),style=wx.OK | wx.ICON_ERROR)
