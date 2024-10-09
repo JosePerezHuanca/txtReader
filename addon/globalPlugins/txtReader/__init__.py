@@ -173,7 +173,7 @@ class GlobalPlugin(globalPluginHandler.GlobalPlugin):
 
 
     # Translate
-    @script(description=_('Muestra un diálogo para buscar'),gesture='kb:NVDA+alt+b',category=scriptCategory)
+    @script(description=_('Muestra un diálogo para buscar en el texto actual'),gesture='kb:NVDA+alt+b',category=scriptCategory)
     def script_search(self,gesture):
         def show_dialog():
             if self.currentText:
@@ -188,7 +188,7 @@ class GlobalPlugin(globalPluginHandler.GlobalPlugin):
 
 
     # Translate
-    @script(description=_('Navega al siguiente texto de la lista'), gesture='kb:NVDA+alt+rightArrow', category=scriptCategory)
+    @script(description=_('Si se abrió mas de un archivo, navega al siguiente texto en la lista'), gesture='kb:NVDA+alt+rightArrow', category=scriptCategory)
     def script_next_text(self, gesture):
         if self.content:
             if self.selectedItemIndex < len(self.content)-1:
@@ -210,7 +210,7 @@ class GlobalPlugin(globalPluginHandler.GlobalPlugin):
             ui.message(_('Primero selecciona un archivo.'))
 
     # Translate
-    @script(description=_('Navega al texto anterior de la lista'), gesture='kb:NVDA+alt+leftArrow', category=scriptCategory)
+    @script(description=_('Si se abrió mas de un archivo, navega al texto anterior en la lista'), gesture='kb:NVDA+alt+leftArrow', category=scriptCategory)
     def script_previous_text(self, gesture):
         if self.content:
             if self.selectedItemIndex>0:
@@ -231,7 +231,7 @@ class GlobalPlugin(globalPluginHandler.GlobalPlugin):
             ui.message(_('Primero selecciona un archivo.'))
 
     # Translate
-    @script(description='Elimina el texto actual de la lista', gesture='kb:NVDA+alt+backSpace')
+    @script(description=_('Elimina el texto actual de la lista'), gesture='kb:NVDA+alt+backSpace')
     def script_remove_current_text(self, gesture):
         if self.fileName:
             for item in self.content:
