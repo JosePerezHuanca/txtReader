@@ -4,7 +4,6 @@
 # Copyright (C) 2024 José Perez <perezhuancajose@gmail.com>
 
 
-import threading
 import globalPluginHandler;
 from scriptHandler import script;
 import os;
@@ -17,6 +16,7 @@ import globalVars;
 import addonHandler;
 import gui
 from .Dialog_line import DialogLine
+from .Dialog_search import DialogSearch
 
 def disableInSecureMode(decoratedCls):
     if globalVars.appArgs.secure:
@@ -172,6 +172,19 @@ class GlobalPlugin(globalPluginHandler.GlobalPlugin):
         wx.CallAfter(show_dialog)
 
 
+    # Translate
+    @script(description=_('Muestra un diálogo para buscar'),gesture='kb:NVDA+alt+b',category=scriptCategory)
+    def script_search(self,gesture):
+        def show_dialog():
+            if self.currentText:
+                dialog=DialogSearch(gui.mainFrame,self)
+                gui.mainFrame.prePopup()
+                dialog.Show()
+                dialog.CentreOnScreen()
+                gui.mainFrame.postPopup()
+            else:
+                wx.MessageBox(_('Primero selecciona un archivo'),_('Error'),style=wx.OK | wx.ICON_ERROR)
+        wx.CallAfter(show_dialog)
 
 
     # Translate
