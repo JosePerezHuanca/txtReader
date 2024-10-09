@@ -10,6 +10,7 @@ import os;
 import wx;
 import codecs;
 import api;
+import threading
 import ui;
 import tones;
 import globalVars;
@@ -43,6 +44,14 @@ class GlobalPlugin(globalPluginHandler.GlobalPlugin):
     # Translators: script category for add-on gestures
     scriptCategory=_('Txt reader');
 
+    def threadMessage(self,message):
+        def displayMessage():
+            tones.beep(300,150);
+            ui.message(message)
+        thread = threading.Timer(0.1,displayMessage)
+        thread.start()
+
+
     # Translate
     @script(description=_('Muestra el diálogo para abrir archivo'), gesture='kb:NVDA+alt+f', category=scriptCategory)
     def script_open_file(self,gesture):
@@ -64,7 +73,7 @@ class GlobalPlugin(globalPluginHandler.GlobalPlugin):
                                 self.currentItem=0;
                                 self.selectedItemIndex = len(self.content) - 1
                                 self.currentText=content
-                                tones.beep(300,150);
+                                self.threadMessage(_(f'Lellendo {self.fileName}'))
                             else:
                                 wx.MessageBox(_('Ese archivo ya fue cargado'), _('Error'), style=wx.OK | wx.ICON_ERROR)
                     else:
