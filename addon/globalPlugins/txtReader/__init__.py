@@ -91,7 +91,7 @@ class GlobalPlugin(globalPluginHandler.GlobalPlugin):
             # Translate
             ui.message(_('Primero selecciona un archivo'));
         else:
-            ui.message(self.currentText[self.currentItem],SpeechPriority.NOW)
+            ui.message(self.currentText[self.currentItem])
 
 
 

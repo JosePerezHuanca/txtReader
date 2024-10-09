@@ -1,18 +1,19 @@
 import wx
 import threading
 import ui
+from speech.priorities import SpeechPriority
 
 class DialogSearch(wx.Dialog):
 	def __init__(self,frame, plugin):
 		super(DialogSearch,self).__init__(None,title=_("Buscar"))
 		self.plugin=plugin
 		self.panel=wx.Panel(self)
-		search_label=wx.StaticText(self.panel, wx.ID_ANY, label=_("Busca algo"))
+		search_label=wx.StaticText(self.panel, wx.ID_ANY, label=_("&Busca algo"))
 		self.line_search = wx.TextCtrl(self.panel, wx.ID_ANY, style=wx.TE_PROCESS_ENTER)
 		self.line_search.Bind(wx.EVT_TEXT_ENTER, self.on_search)
-		self.okBTN=wx.Button(self.panel,label=_("Aceptar"))
+		self.okBTN=wx.Button(self.panel,label=_("&Aceptar"))
 		self.okBTN.Bind(wx.EVT_BUTTON,self.on_search)
-		self.cancelBTN=wx.Button(self.panel,label=_("Cancelar"))
+		self.cancelBTN=wx.Button(self.panel,label=_("&Cancelar"))
 		self.cancelBTN.Bind(wx.EVT_BUTTON,self.on_cancel)
 		self.Bind(wx.EVT_CHAR_HOOK, self.on_key_window)
 
@@ -27,7 +28,9 @@ class DialogSearch(wx.Dialog):
 		self.CenterOnScreen()
 
 	def threadMessage(self):
-		thread=threading.Timer(0.06,self.plugin.speakCurrentLine)
+		def message():
+			ui.message(self.plugin.currentText[self.plugin.currentItem],SpeechPriority.NOW)
+		thread=threading.Timer(0.06,message)
 		thread.start()
 
 

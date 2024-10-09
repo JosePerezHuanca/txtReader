@@ -1,6 +1,7 @@
 import wx
 import threading
 import ui
+from speech.priorities import SpeechPriority
 
 class DialogLine(wx.Dialog):
 	def __init__(self,frame, plugin):
@@ -8,14 +9,14 @@ class DialogLine(wx.Dialog):
 		self.plugin=plugin
 		self.line=self.plugin.currentItem+1
 		self.panel=wx.Panel(self)
-		line_label=wx.StaticText(self.panel, wx.ID_ANY, label=_("Número de línea"))
+		line_label=wx.StaticText(self.panel, wx.ID_ANY, label=_("&Número de línea"))
 		self.line_num = wx.TextCtrl(self.panel, wx.ID_ANY, value=str(self.line),style=wx.TE_PROCESS_ENTER)
 		self.line_num.Bind(wx.EVT_TEXT, self.on_text_change)
 		self.line_num.Bind(wx.EVT_TEXT_ENTER, self.on_go)
 		self.line_num.Bind(wx.EVT_KEY_DOWN, self.on_key_press)
-		self.okBTN=wx.Button(self.panel,label=_("Aceptar"))
+		self.okBTN=wx.Button(self.panel,label=_("&Aceptar"))
 		self.okBTN.Bind(wx.EVT_BUTTON,self.on_go)
-		self.cancelBTN=wx.Button(self.panel,label=_("Cancelar"))
+		self.cancelBTN=wx.Button(self.panel,label=_("&Cancelar"))
 		self.cancelBTN.Bind(wx.EVT_BUTTON,self.on_cancel)
 		self.Bind(wx.EVT_CHAR_HOOK, self.on_key_window)
 
@@ -30,7 +31,9 @@ class DialogLine(wx.Dialog):
 		self.CenterOnScreen()
 
 	def threadMessage(self):
-		thread=threading.Timer(0.06,self.plugin.speakCurrentLine)
+		def message():
+			ui.message(self.plugin.currentText[self.plugin.currentItem],SpeechPriority.NOW)
+		thread=threading.Timer(0.06,message)
 		thread.start()
 
 
