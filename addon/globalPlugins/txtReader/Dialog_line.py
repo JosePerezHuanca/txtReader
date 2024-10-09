@@ -30,7 +30,7 @@ class DialogLine(wx.Dialog):
 		self.CenterOnScreen()
 
 	def threadMessage(self):
-		thread=threading.Timer(0.1,self.plugin.speakCurrentLine)
+		thread=threading.Timer(0.06,self.plugin.speakCurrentLine)
 		thread.start()
 
 

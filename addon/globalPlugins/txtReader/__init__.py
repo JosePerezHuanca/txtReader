@@ -12,6 +12,7 @@ import codecs;
 import api;
 import threading
 import ui;
+from speech.priorities import SpeechPriority
 import tones;
 import globalVars;
 import addonHandler;
@@ -47,8 +48,8 @@ class GlobalPlugin(globalPluginHandler.GlobalPlugin):
     def threadMessage(self,message):
         def displayMessage():
             tones.beep(300,150);
-            ui.message(message)
-        thread = threading.Timer(0.1,displayMessage)
+            ui.message(message,SpeechPriority.NOW)
+        thread = threading.Timer(0.02,displayMessage)
         thread.start()
 
 
@@ -90,7 +91,7 @@ class GlobalPlugin(globalPluginHandler.GlobalPlugin):
             # Translate
             ui.message(_('Primero selecciona un archivo'));
         else:
-            ui.message(self.currentText[self.currentItem])
+            ui.message(self.currentText[self.currentItem],SpeechPriority.NOW)
 
 
 
