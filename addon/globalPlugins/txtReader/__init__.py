@@ -165,7 +165,7 @@ class GlobalPlugin(globalPluginHandler.GlobalPlugin):
         self.content.clear();
         self.currentText.clear();
         # Translate
-        ui.message(_('Se vació el buffer'));
+        ui.message(_('Se vació la lista'));
 
     # Translate
     @script(description=_('Muestra el diálogo para ir a una línea específica'),gesture='kb:NVDA+alt+g',category=scriptCategory)
