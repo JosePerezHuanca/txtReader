@@ -15,11 +15,24 @@ Nota: todos los atajos se pueden personalizar en la categoría Txt reader del di
 - NVDA+alt+flecha arriba: Navega a la línea anterior.
 - NVDA+alt+espacio: Lee la línea actual.
 - NVDA+alt+inicio o fin: Ir al principio o fin del texto.
+- NVDA+alt+flecha derecha: Si se abrió mas de un archivo, navega al siguiente texto en la lista.
+- NVDA+alt+flecha izquierda: Si se abrió mas de un archivo, navega al texto anterior en la lista.
+- NVDA+alt+retroceso: Elimina el texto actual de la lista.
 - NVDA+alt+t: Lee el título del archivo
 - NVDA+alt+c: Copia la línea actual al portapapeles.
-- NVDA+alt+l: Si se abrió previamente un archivo, vacía el contenido en memoria.
+- NVDA+alt+l: Si se abrió previamente uno o mas archivos, vacía la lista de textos.
+- NVDA+alt+g: Muestra un diálogo para ir a una línea específica.
+- NVDA+alt+b: Muestra un diálogo para buscar en el texto actual.
+
 
 ## Registro de cambios
+
+### 0.4
+
+- Ahora el complemento permite leer mas de un texto. Con los atajos NVDA+alt+flechas izquierda y derecha se puede navegar entre los textos en la lista. NVDA+alt+retroceso elimina el texto actual.
+- Se añadió un diálogo para ir a una línea específica en el texto actual: NVDA+alt+g.
+- Se añadió un diálogo para buscar en el texto actual: NVDA+alt+b.
+- Algunas correcciones
 
 ### 0.3
 
@@ -34,4 +47,3 @@ Nota: todos los atajos se pueden personalizar en la categoría Txt reader del di
 ### 0.1
 
 Versión inicial.
-
