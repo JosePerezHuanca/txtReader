@@ -162,10 +162,12 @@ class GlobalPlugin(globalPluginHandler.GlobalPlugin):
     # Translate
     @script(description=_('Si se abrió uno o mas archivos previamente, vacía el contenido en memoria'),gesture='kb:NVDA+alt+l', category=scriptCategory)
     def script_clear_list(self,gesture):
-        self.content.clear();
-        self.currentText.clear();
-        # Translate
-        ui.message(_('Se vació la lista'));
+        if self.content:
+            self.content.clear();
+            self.currentText.clear();
+            ui.message(_('Se vació la lista'));
+        else:
+            ui.message(_('Primero selecciona un archivo'))
 
     # Translate
     @script(description=_('Muestra el diálogo para ir a una línea específica'),gesture='kb:NVDA+alt+g',category=scriptCategory)
