@@ -49,7 +49,7 @@ class GlobalPlugin(globalPluginHandler.GlobalPlugin):
         def displayMessage():
             tones.beep(300,150);
             ui.message(message,SpeechPriority.NOW)
-        thread = threading.Timer(0.02,displayMessage)
+        thread = threading.Timer(0.06,displayMessage)
         thread.start()
 
 
