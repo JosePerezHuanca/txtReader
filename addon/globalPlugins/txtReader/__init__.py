@@ -257,6 +257,7 @@ class GlobalPlugin(globalPluginHandler.GlobalPlugin):
                 current_item = self.content[self.selectedItemIndex]
                 self.fileName = current_item["title"]
                 self.currentText = current_item["text"]
+            ui.message(_('Eliminado'))
             self.speakCurrentLine()
         else:
-            ui.message('Primero selecciona un archivo')
+            ui.message(_('Primero selecciona un archivo'))
