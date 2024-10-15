@@ -33,7 +33,7 @@ class DialogLine(wx.Dialog):
 	def threadMessage(self):
 		def message():
 			ui.message(self.plugin.currentText[self.plugin.currentItem],SpeechPriority.NOW)
-		thread=threading.Timer(0.06,message)
+		thread=threading.Timer(0.1,message)
 		thread.start()
 
 
