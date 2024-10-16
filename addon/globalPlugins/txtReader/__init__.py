@@ -218,8 +218,12 @@ class GlobalPlugin(globalPluginHandler.GlobalPlugin):
                 self.currentText=last["text"]
                 ui.message(_('Fin'))
                 self.speakCurrentLine()
+                tones.beep(400,150);
         else:
+            ui.message(_('Fin'))
             ui.message(_('Primero selecciona un archivo.'))
+            tones.beep(400,150);
+
 
     # Translate
     @script(description=_('Si se abrió mas de un archivo, navega al texto anterior en la lista'), gesture='kb:NVDA+alt+leftArrow', category=scriptCategory)
@@ -239,8 +243,12 @@ class GlobalPlugin(globalPluginHandler.GlobalPlugin):
                 self.currentText=first["text"]
                 ui.message(_('Inicio'))
                 self.speakCurrentLine()
+                tones.beep(200,150);
         else:
+            ui.message(_('Inicio'))
             ui.message(_('Primero selecciona un archivo.'))
+            tones.beep(200,150);
+
 
     # Translate
     @script(description=_('Elimina el texto actual de la lista'), gesture='kb:NVDA+alt+backSpace')
