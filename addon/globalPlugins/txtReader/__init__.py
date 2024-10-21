@@ -174,11 +174,13 @@ class GlobalPlugin(globalPluginHandler.GlobalPlugin):
     def script_got_to_line(self,gesture):
         def show_dialog():
             if self.currentText:
-                dialog=DialogLine(gui.mainFrame,self)
-                gui.mainFrame.prePopup()
-                dialog.Show()
-                dialog.CentreOnScreen()
-                gui.mainFrame.postPopup()
+                if not DialogLine.open:
+                    dialog=DialogLine(gui.mainFrame,self)
+                    gui.mainFrame.prePopup()
+                    dialog.Show()
+                    dialog.CentreOnScreen()
+                    gui.mainFrame.postPopup()
+                    DialogLine.open=True
             else:
                 wx.MessageBox(_('Primero selecciona un archivo'),_('Error'),style=wx.OK | wx.ICON_ERROR)
         wx.CallAfter(show_dialog)
@@ -189,11 +191,13 @@ class GlobalPlugin(globalPluginHandler.GlobalPlugin):
     def script_search(self,gesture):
         def show_dialog():
             if self.currentText:
-                dialog=DialogSearch(gui.mainFrame,self)
-                gui.mainFrame.prePopup()
-                dialog.Show()
-                dialog.CentreOnScreen()
-                gui.mainFrame.postPopup()
+                if not DialogSearch.open:
+                    dialog=DialogSearch(gui.mainFrame,self)
+                    gui.mainFrame.prePopup()
+                    dialog.Show()
+                    dialog.CentreOnScreen()
+                    gui.mainFrame.postPopup()
+                    DialogSearch.open=True
             else:
                 wx.MessageBox(_('Primero selecciona un archivo'),_('Error'),style=wx.OK | wx.ICON_ERROR)
         wx.CallAfter(show_dialog)
