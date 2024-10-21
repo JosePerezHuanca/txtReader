@@ -4,6 +4,7 @@ import ui
 from speech.priorities import SpeechPriority
 
 class DialogSearch(wx.Dialog):
+	open=False
 	def __init__(self,frame, plugin):
 		super(DialogSearch,self).__init__(None,title=_("Buscar"))
 		self.plugin=plugin
@@ -26,6 +27,13 @@ class DialogSearch(wx.Dialog):
 		sizeV.Add(sizeH,0,wx.EXPAND)
 		self.panel.SetSizer(sizeV)
 		self.CenterOnScreen()
+
+
+	def Close(self):
+		#Modifico el comportamiento de self.Close para actualizar booleano open
+		super(DialogSearch,self).Close()
+		DialogSearch.open=False
+
 
 	def threadMessage(self):
 		def message():

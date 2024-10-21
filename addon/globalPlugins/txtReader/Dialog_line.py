@@ -4,6 +4,7 @@ import ui
 from speech.priorities import SpeechPriority
 
 class DialogLine(wx.Dialog):
+	open=False
 	def __init__(self,frame, plugin):
 		super(DialogLine,self).__init__(None,title="Ir a")
 		self.plugin=plugin
@@ -29,6 +30,13 @@ class DialogLine(wx.Dialog):
 		sizeV.Add(sizeH,0,wx.EXPAND)
 		self.panel.SetSizer(sizeV)
 		self.CenterOnScreen()
+
+
+	def Close(self):
+		#Modifico el comportamiento de self.Close para actualizar booleano open
+		super(DialogLine,self).Close()
+		DialogLine.open=False
+
 
 	def threadMessage(self):
 		def message():
