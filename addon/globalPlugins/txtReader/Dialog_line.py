@@ -72,7 +72,12 @@ class DialogLine(wx.Dialog):
 
 	def on_key_press(self,event):
 		key_code=event.GetKeyCode()
-		if key_code == wx.WXK_DOWN:
+		ctrl_down=event.ControlDown()
+		if ctrl_down and key_code == wx.WXK_HOME:
+			self.line_num.SetValue('1')
+		elif ctrl_down and key_code == wx.WXK_END:
+			self.line_num.SetValue(str(len(self.plugin.currentText)))
+		elif key_code == wx.WXK_DOWN:
 			self.increment()
 		elif key_code == wx.WXK_UP:
 			self.decrement()
