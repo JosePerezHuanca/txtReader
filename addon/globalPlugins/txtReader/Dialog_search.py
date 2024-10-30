@@ -1,7 +1,15 @@
 import wx
+import os
+import sys
 import threading
 import ui
 from speech.priorities import SpeechPriority
+
+# Añadir el directorio actual al path
+sys.path.insert(0, os.path.join(os.path.dirname(os.path.abspath(__file__)), 'lib'))
+from fuzzywuzzy import fuzz
+sys.path.remove(os.path.join(os.path.dirname(os.path.abspath(__file__)), 'lib'))
+
 
 class DialogSearch(wx.Dialog):
 	open=False
@@ -48,7 +56,10 @@ class DialogSearch(wx.Dialog):
 		found=False
 		for index in range(start_index,len(self.plugin.currentText)):
 			search_result=self.plugin.currentText[index]
-			if search_value in search_result.lower():
+			# utilizamos el método partial_ratio para evaluar coincidencias entre las cadenas search_value y search_result
+			similarity = fuzz.partial_ratio(search_value, search_result.lower())
+			# Si el porcentaje de coincidencia es igual o mayor a 70%, se establece currentItem al balor del index
+			if similarity >= 70:
 				self.plugin.currentItem = index
 				self.threadMessage()
 				found=True
