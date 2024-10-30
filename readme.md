@@ -27,7 +27,7 @@ Nota: todos los atajos se pueden personalizar en la categoría Txt reader del di
 
 ## Registro de cambios
 
-### 0.4
+### 1.0
 
 - Ahora el complemento permite leer mas de un texto. Con los atajos NVDA+alt+flechas izquierda y derecha se puede navegar entre los textos en la lista. NVDA+alt+retroceso elimina el texto actual.
 - Se añadió un diálogo para ir a una línea específica en el texto actual: NVDA+alt+g.
